@@ -60,6 +60,7 @@ and n estimators must be entered)
 As of now, the user also has the option to plot ROC curves for the gestures for
 each classifier. Whether or not the user decides to input additional parameters, 
 he/she may also enter 'plot' as a parameter. That gives the user 4 options:
+
     Default Values/No Additional Parameters without ROC Curve plot
     Default Values/No Additional Parameters with ROC Curve plot
     Custom Values/Additional Parameters without ROC Curve plot
