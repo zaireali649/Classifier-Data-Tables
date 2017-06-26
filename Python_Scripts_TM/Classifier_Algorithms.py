@@ -4,69 +4,7 @@
 
 Thatyana
 
-##############################################################################
-#                                    Overview                                #
-##############################################################################
-For this script, the user goes into the command line (makes sure they're 
-in the folder with the script) and types this:
-    
-python Classifier_Algorithms.py --<classifier_type> <any additional parameters> <plot>
-
-This script supports running the following classifiers:
-    Logistic Regression (Parameters: C, penalty, tolerance)
-    SVM Linear
-    SVM RBF
-    Decision Tree
-    AdaBoost (Parameters: base_estimator, n_estimators)
-    
-As for the command line, a user must enter the script name followed by a 
-classifier of their choice:
-    Logistic Regression: --logr
-    SVM Linear: --svml
-    SVM RBF: --svmrbf
-    Decision Tree: --dectree
-    AdaBoost: --ada 
-
-##############################################################################
-#                   Additional Parameters and Default Values                 #
-##############################################################################
-Currently, each classifier can have additional optional parameters. Solely 
-typing the classifier name will produce results given by default values
-
-    Logistic Regression has 3 additional parameters:
-        C has a default value of 10
-        Penalty has a default value of 'l1'
-        Tolerance has a default value of 0.01
-        
-    AdaBoost has 2 additional parameters: **
-        base_estimator has a default value of 'dtc' which is Decision Tree
-        n_estimators has a default value of 50
-        
-** for AdaBoost, currently the available base_estimators are as follows:
-    dtc: DecisionTreeClassifier
-    rfc: RandomForestClassifier
-    perc: Perceptron
-
-##############################################################################
-#                                    Note                                    #
-##############################################################################
-When giving commands on the command line, the user can either enter just a 
-classifier, or the classifier and ALL of its parameters. For example, if a user
-wished to use Logistic Regression and input custom values, they must enter values
-for C, Penalty, and Tolerance. Same goes for AdaBoost (both the base estimators
-and n estimators must be entered)
-
-##############################################################################
-#                                    Plot                                    #
-##############################################################################
-As of now, the user also has the option to plot ROC curves for the gestures for
-each classifier. Whether or not the user decides to input additional parameters, 
-he/she may also enter 'plot' as a parameter. That gives the user 4 options:
-      Default Values/No Additional Parameters without ROC Curve plot
-      Default Values/No Additional Parameters with ROC Curve plot
-      Custom Values/Additional Parameters without ROC Curve plot
-      Custom Values/Additional Parameters with ROC Curve plot
-      
+Specific instructions on how to use this script are in the README     
    
 
 """
@@ -90,23 +28,19 @@ from sklearn.linear_model import Perceptron
 
 import matplotlib.pyplot as plt
 from itertools import cycle
-from sklearn import datasets
 from sklearn.metrics import roc_curve, auc
-from sklearn.metrics import roc_auc_score
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import label_binarize
-from sklearn.multiclass import OneVsRestClassifier
 from scipy import interp
 
 
 import numpy as np
 import featureExtraction as featExtr
+import relabelGestureSet as relabel
 
 
 
 
 # File IO
-path = 'rawData128SinglePoint.csv'
+path = 'raw128Length.csv'
 data = genfromtxt(path, delimiter=',', skip_header=1,usecols=range(0,384))
 patientID = genfromtxt(path, delimiter=',', skip_header=1,usecols=[384])
 classifications = genfromtxt(path, delimiter=',', skip_header=1,usecols=[385])
@@ -131,25 +65,6 @@ def matrix(y, n):
     for x in range(len(y)):
         m[x][int(y[x])] = 1   
     return (m)    
- 
-# Since the LRUD Points were converted to one Point action,
-# the set went from 0 1 2 3 4 5 6 7 8 9 10 11 
-# to 0 1 2 3 4 5 9 10 11. To make formatting neater, 
-# this function converts the 2nd set to 
-# 0 1 2 3 4 5 6 7 8      
-def replace(y):
-    w = set(y)
-    w = list(w)
-#    print w
-    for x in range(len(set(y))):
-        if (w[x] != x):
-            for z in range(len(y)):
-                if (y[z] == w[x]):
-                    y[z] = x
-    w = set(y)
-    w = list(w)
-#    print w
-    return y
 
 def plotRoc(tpr, fpr, roc_auc, n_classes):
     # Plot all ROC curves
@@ -165,7 +80,10 @@ def plotRoc(tpr, fpr, roc_auc, n_classes):
              ''.format(roc_auc["macro"]),
                       color='navy', linestyle=':', linewidth=4)
               
-    colors = cycle(['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'gray', 'black'])
+    colors = cycle(['red', 'orange', 'yellow', 'green', 'blue',
+                    'indigo', 'violet', 'gray', 'black', 'fuchsia',
+                    'cadetblue', 'orchid', 'seagreen', 'olive', 'darkgoldenrod',
+                    'tomato', 'sienna', 'lightskyblue', 'peru', 'sandybrown'])
     for i, color in zip(range(n_classes), colors):
         plt.plot(fpr[i], tpr[i], color=color, lw=lw,
                  label='Class {0} ROC (area = {1:0.6f})'
@@ -183,6 +101,7 @@ def plotRoc(tpr, fpr, roc_auc, n_classes):
 def printRocCurve(f, score, test, isPlot):
     
     n_classes = len(set(classifications))
+
     # Compute ROC curve and ROC area for each class
     fpr = dict()
     tpr = dict()
@@ -232,7 +151,11 @@ def printChart(f, clf, isPlot):
     ## prints ... for the center. For displaying purposes, these statements
     ## print the entire array and remove the periods 
     np.set_printoptions(threshold='nan')
-    confMat = np.zeros((9,9), dtype=np.int)   
+    
+    ## Generifies the script by basing the confusion matrix size off of
+    ## the number of gestures in the set in the file. 
+    matrixSize = len(set(classifications))
+    confMat = np.zeros((matrixSize, matrixSize), dtype=np.int)   
     allPredictions = []
     allClassifications = []
 
@@ -280,8 +203,11 @@ def printChart(f, clf, isPlot):
     f.write("\n\nAccuracy:, " + ("%.6f"%accuracy_score(allClassifications,allPredictions)))
     f.write('\n')
         
-    allPredictions2 = replace(allPredictions)
-    allClassifications2 = replace(allClassifications)
+    ## needed only for the rawData128SinglePoint.csv file. This and the replace
+    ## function can be commented out/removed once new data is collected and used
+    ## with this script
+    allPredictions2 = relabel.replace(allPredictions)
+    allClassifications2 = relabel.replace(allClassifications)
 
     score = matrix(allClassifications2, len(set(allClassifications2)))
     test = matrix(allPredictions2, len(set(allPredictions2)))
