@@ -7,7 +7,7 @@
 For this script, the user goes into the command line (makes sure they're 
 in the folder with the script) and types this:
     
-python Classifier_Algorithms.py --<classifier_type> <any additional parameters> <plot>
+    python Classifier_Algorithms.py --<classifier_type> <any additional parameters> <plot>
 
 This script supports running the following classifiers:
     Logistic Regression (Parameters: C, penalty, tolerance)
