@@ -4,12 +4,12 @@
 ##############################################################################
 #                                    Overview                                #
 ##############################################################################
-For this script, the user goes into the command line (makes sure they're 
-in the folder with the script) and types this:
+For the Classifier Algorithms script, the user can type this into the command line:
     
     python Classifier_Algorithms.py --<classifier_type> <any additional parameters> <plot>
 
 This script supports running the following classifiers:
+
     Logistic Regression (Parameters: C, penalty, tolerance)
     SVM Linear
     SVM RBF
@@ -18,6 +18,7 @@ This script supports running the following classifiers:
     
 As for the command line, a user must enter the script name followed by a 
 classifier of their choice:
+
     Logistic Regression: --logr
     SVM Linear: --svml
     SVM RBF: --svmrbf
