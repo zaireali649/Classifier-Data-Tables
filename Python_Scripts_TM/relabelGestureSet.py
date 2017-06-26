@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun 26 14:32:08 2017
+Created Mon Jun 26 2017
 
 @author: Thatyana Morales
 
@@ -13,7 +13,6 @@ Classifier_Algorithms.py file can be removed
 def replace(y):
     w = set(y)
     w = list(w)
-#    print w
     for x in range(len(set(y))):
         if (w[x] != x):
             for z in range(len(y)):
@@ -21,5 +20,4 @@ def replace(y):
                     y[z] = x
     w = set(y)
     w = list(w)
-#    print w
     return y
