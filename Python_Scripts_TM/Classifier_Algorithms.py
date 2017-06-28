@@ -5,7 +5,16 @@ Created Jun 6 2017
 @author: Thatyana
 
 Specific instructions on how to use this script are in the README     
-   
+
+**********To change default values for Log Reg and AdaBoost*******************
+The default values are listed right before the LogRegression function down
+below. It should look like this:
+defaultC = 
+defaultPenalty = 
+defaultTolerance = 
+
+defaultBase = 
+defaultEstimators =
 
 """
 
@@ -40,13 +49,22 @@ features = features[:,:]
 
 # Cross- Validation Schemes
 kf = KFold(len(classifications), 10)
-loso = LeaveOneLabelOut(patientID)    
+loso = LeaveOneLabelOut(patientID)  
+
+# Default values for Logistic Regression and AdaBoost
+defaultC = 10
+defaultPenalty = 'l1'
+defaultTolerance = .01  
+
+defaultBase = 'dtc'
+defaultEstimators = 50
 
 
 # function uses logistic regression classifier 
 def logRegression(C, penalty, tolerance, isPlot):
     
-     ## Creates CSV file with Classifier type, and parameter values (C, Penalty, and Tolerance in that order)
+     ## Creates CSV file with Classifier type, and parameter values 
+     ## (C, Penalty, and Tolerance in that order)
      filetype = 'LogisticRegressionClassifier_%s_%s_%s.csv' % (str(C), str(penalty), str(tolerance))
      f = open(filetype, "w")
      filename = 'Logistic Regression\n' + 'C, ' + str(C) + '\nPenalty, ' + penalty + '\nTolerance, ' + str(tolerance) + '\n\n'
@@ -62,7 +80,8 @@ def logRegression(C, penalty, tolerance, isPlot):
       
      printChart(f, clf, isPlot)     
             
-     ## Statement prints when the file is completed, allowing the user to know when to open the file to view it        
+     ## Statement prints when the file is completed, allowing the user to 
+     ## know when to open the file to view it        
      print("\nData is now in \"LogisticRegressionClassifier_%s_%s_%s.csv\"\n" % (str(C), str(penalty), str(tolerance)))       
                 
 
@@ -77,8 +96,7 @@ def svMachineLinear(isPlot):
     clf = svm.SVC(kernel='linear')
      
     printChart(f, clf, isPlot)
-      
-    ## Statement prints when the file is completed, allowing the user to know when to open the file to view it        
+              
     print("\nData is now in \"SVMClassifier_Linear.csv\"\n")  
     
     
@@ -163,11 +181,11 @@ def main():
 
     # logistic regression
     if clfSelect == '--logr':
-        if len(sys.argv) == 2: #default value of not inserting any other parameters and no plotting
-            classifierDict['1'](10, 'l1', .01, 'false')
+        if len(sys.argv) == 2: #default values, no plot
+            classifierDict['1'](defaultC, defaultPenalty, defaultTolerance, 'false')
         elif len(sys.argv) == 3:
             if sys.argv[2] == 'plot': #default values with plot
-                classifierDict['1'](10, 'l1', .01, 'true')
+                classifierDict['1'](defaultC, defaultPenalty, defaultTolerance, 'true')
         else:
             if len(sys.argv) == 5:
                 classifierDict['1'](sys.argv[2], sys.argv[3], sys.argv[4], 'false') #custom values no plot
@@ -201,10 +219,10 @@ def main():
     # AdaBoost              
     elif clfSelect == '--ada':
         if len(sys.argv) == 2:
-            classifierDict['5']('dtc', 50, 'false') #default values no plot
+            classifierDict['5'](defaultBase, defaultEstimators, 'false') #default values no plot
         elif len(sys.argv) == 3:
             if sys.argv[2] == 'plot':
-                classifierDict['5']('dtc', 50, 'true') #default values with plot
+                classifierDict['5'](defaultBase, defaultEstimators, 'true') #default values with plot
         elif len(sys.argv) == 4:
             classifierDict['5'](sys.argv[2], sys.argv[3], 'false') #custom values no plot
         else:
