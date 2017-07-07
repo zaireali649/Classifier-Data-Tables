@@ -22,8 +22,6 @@ import sys
 
 from numpy import genfromtxt
 from sklearn.cross_validation import KFold
-from sklearn.cross_validation import LeaveOneLabelOut
-
 
 from sklearn.linear_model import LogisticRegression
 from sklearn import svm
@@ -32,11 +30,12 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.linear_model import Perceptron
 
-import printDataTables
+import printDataTables_OneUser
 import featureExtraction as featExtr
 
 # File IO
-path = 'rawData128SinglePoint.csv'
+path = 'User0SinglePointData.csv'
+userNumber = int(filter(str.isdigit, path))
 data = genfromtxt(path, delimiter=',', skip_header=1,usecols=range(0,384))
 patientID = genfromtxt(path, delimiter=',', skip_header=1,usecols=[384])
 classifications = genfromtxt(path, delimiter=',', skip_header=1,usecols=[385])
@@ -48,8 +47,7 @@ features = featExtr.main(data,classifications)
 features = features[:,:]
 
 # Cross- Validation Schemes
-kf = KFold(len(classifications), 10)
-loso = LeaveOneLabelOut(patientID)  
+kf = KFold(len(classifications), 10, shuffle=True)
 
 # Default values for Logistic Regression and AdaBoost
 defaultC = 10
@@ -65,9 +63,9 @@ def logRegression(C, penalty, tolerance, isPlot):
     
      ## Creates CSV file with Classifier type, and parameter values 
      ## (C, Penalty, and Tolerance in that order)
-     filetype = 'LogisticRegressionClassifier_%s_%s_%s.csv' % (str(C), str(penalty), str(tolerance))
+     filetype = 'User_%s_LogisticRegression_%s_%s_%s.csv' % (str(userNumber), str(C), str(penalty), str(tolerance))
      f = open(filetype, "w")
-     filename = 'Logistic Regression\n' + 'C, ' + str(C) + '\nPenalty, ' + penalty + '\nTolerance, ' + str(tolerance) + '\n\n'
+     filename = 'Logistic Regression\n' + 'User, ' + str(userNumber) + '\nC, ' + str(C) + '\nPenalty, ' + penalty + '\nTolerance, ' + str(tolerance) + '\n\n'
      f.write(filename)    
     
      ## Initializes classifier type, since all 3 of 
@@ -78,58 +76,64 @@ def logRegression(C, penalty, tolerance, isPlot):
      ## Sets classifier
      clf = LogisticRegression(C=cValue,penalty=penalty, tol=tolValue)
       
-     printDataTables.printChart(f, clf, isPlot)     
+     printDataTables_OneUser.printChart(f, clf, isPlot)     
             
      ## Statement prints when the file is completed, allowing the user to 
      ## know when to open the file to view it        
-     print("\nData is now in \"LogisticRegressionClassifier_%s_%s_%s.csv\"\n" % (str(C), str(penalty), str(tolerance)))       
+     print("\nData is now in \"User_%s_LogisticRegression_%s_%s_%s.csv\"\n" % (str(userNumber), str(C), str(penalty), str(tolerance)))       
                 
 
 # function uses support vector machine with a linear kernel
 def svMachineLinear(isPlot):
     
     ## Creates CSV file and make title of classifier used
-    f = open("SVMClassifier_Linear.csv", "w")
-    f.write("Support Vector Machine: Linear Kernel\n\n")
+    filetype = 'User_%s_SVM_Linear.csv' % (str(userNumber))
+    f = open(filetype, "w")
+    f.write("Support Vector Machine: Linear Kernel")
+    f.write('\nUser, ' + str(userNumber) + '\n\n')
     
     ## Classifier type for this is SVM, with a linear kernal 
     clf = svm.SVC(kernel='linear')
      
-    printDataTables.printChart(f, clf, isPlot)
+    printDataTables_OneUser.printChart(f, clf, isPlot)
               
-    print("\nData is now in \"SVMClassifier_Linear.csv\"\n")  
+    print("\nData is now in \"User_%s_SVM_Linear.csv\"\n")  
     
     
 # function uses support vector machine with a gaussian/rbf kernel
 def svMachineRBF(isPlot):
   
     ## Creates CSV file and makes title of classifier used
-    f = open("SVMClassifier_RBF.csv", "w")
-    f.write("Support Vector Machine: Gaussian/RBF Kernel\n\n")
+    filetype = 'User_%s_SVM_RBF.csv' % (str(userNumber))
+    f = open(filetype, "w")
+    f.write("Support Vector Machine: Gaussian/RBF Kernel")
+    f.write('\nUser, ' + str(userNumber) + '\n\n')
     
     ## Classifier type for this is SVM, with a linear kernal 
     clf = svm.SVC(kernel='rbf')
         
-    printDataTables.printChart(f, clf, isPlot)        
+    printDataTables_OneUser.printChart(f, clf, isPlot)        
       
     ## Statement prints when the file is completed, allowing the user to know when to open the file to view it        
-    print("\nData is now in \"SVMClassifier_RBF.csv\"\n")    
+    print("\nData is now in \"User_%s_SVM_RBF.csv\"\n")    
     
 # function uses Decision Tree classifier
 def decTree(isPlot):
     
     ## Create CSV file and make fancy title
-    f = open("DecisionTreeClassifier.csv", "w")
-    f.write("Decision Tree\n\n")
+    filetype = 'User_%s_DecisionTree.csv' % (str(userNumber))
+    f = open(filetype, "w")
+    f.write("Decision Tree")
+    f.write('\nUser, ' + str(userNumber) + '\n\n')
     
     ## Classifier type for this is Decision Tree (note, it's considerably faster 
     ## than the other classifiers, in that the results are written sooner)
     clf = tree.DecisionTreeClassifier()
     
-    printDataTables.printChart(f, clf, isPlot)
+    printDataTables_OneUser.printChart(f, clf, isPlot)
     
     ## Statement prints when the file is completed, allowing the user to know when to open the file to view it        
-    print("\nData is now in \"DecisionTreeClassifer.csv\"\n")     
+    print("\nData is now in \"User_%s_DecisionTree.csv\"\n")     
 
 
 # function uses AdaBoost classifier which takes in a classifier type
@@ -160,15 +164,16 @@ def adaBoost(baseEstimator, nEst, isPlot):
     ## After getting the necessary information, a unique file
     ## is opened, with AdaBoost followed by the type of classifier
     ## and number of estimators in the file name.       
-    filetype = 'AdaBoostClassifier_%s_%s.csv' % (baseEst, nEst)
+    filetype = 'User_%s_AdaBoost_%s_%s.csv' % (str(userNumber), baseEst, nEst)
     f = open(filetype, "w")
-    filename = ('AdaBoost with %s\nEstimators:, %s\n\n' % (baseEst, nEst))
+    filename = ('AdaBoost with %s\nEstimators:, %s' % (baseEst, nEst))
     f.write(filename)
+    f.write('\nUser, ' + str(userNumber) + '\n\n')
     
-    printDataTables.printChart(f, clf, isPlot)
+    printDataTables_OneUser.printChart(f, clf, isPlot)
     
     ## Statement prints when the file is completed, allowing the user to know when to open the file to view it   
-    filer = '\nData is now in AdaBoostClassifier_%s_%s.csv' % (baseEst, nEstimators)
+    filer = '\nData is now in User_%s_AdaBoost_%s_%s.csv' % (str(userNumber), baseEst, nEstimators)
     print(filer)    
 
 

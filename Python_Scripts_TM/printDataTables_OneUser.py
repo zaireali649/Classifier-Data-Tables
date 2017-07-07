@@ -15,11 +15,10 @@ from itertools import cycle
 from sklearn.metrics import roc_curve, auc
 from scipy import interp
 import numpy as np
-from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 
-from Classifier_Algorithms import classifications, loso, features
+from Classifier_Algorithms_OneUser import classifications, kf, features
 import relabelGestureSet as relabel
 
 
@@ -83,7 +82,6 @@ def printRocCurve(f, score, test, isPlot):
            
         
     # Compute macro-average ROC curve and ROC area
-
     # First aggregate all false positive rates
     all_fpr = np.unique(np.concatenate([fpr[i] for i in range(n_classes)]))
     
@@ -126,25 +124,43 @@ def printChart(f, clf, isPlot):
     allClassifications = []
 
 
-    ## Creates table of classification and confusion matrix
-    for train, test in loso:
+    allPredictions = []
+    allClassifications = []
+
+    for train, test in kf:     
         clf.fit(features[train], classifications[train])
         predictions = clf.predict(features[test])
-        confMat = confMat + confusion_matrix(classifications[test],predictions)
         allPredictions.append(predictions)
         allClassifications.append(classifications[test])
-
-    ## Connects all predictions and classifications
+        
+       
     allPredictions = np.concatenate(allPredictions)
     allClassifications = np.concatenate(allClassifications)
     
 
-#    
-#    # Classification Report returns a string that contains the chart, but
-#    # each element is not in a separate cell. Therefore, classRep splits
+################################################################################################################        
+    ## needed only for the rawData128SinglePoint.csv file. This function can be 
+    ## commented out/removed once new data is collected and used with this script
+    ## So when score and test are passed into printRocCurve, they just need the 
+    ## matrix function
+    allPredictions2 = relabel.replace(allPredictions)
+    allClassifications2 = relabel.replace(allClassifications)
 
-#    # the string into an array of each of the elements, with 2 spaces as
-#    # the delimiter. 
+    score = matrix(allClassifications2, len(set(allClassifications2)))
+    test = matrix(allPredictions2, len(set(allPredictions2)))
+################################################################################################################ 
+
+    ## Combines allPredictions and allClassifications into the confMat at the end
+    ## REMEMBER TO REMOVE THE 2 AT THE END OF THE VARIBLES FOR THESE 2 LINES ONLY
+    ## THIS IS ONLY FOR THE RAWDATA
+    ## 128SINGLEPOINT.CSV
+    for i in range(len(allClassifications2)):
+        confMat[int(allPredictions2[i])][int(allClassifications2[i])] = confMat[int(allPredictions2[i])][int(allClassifications2[i])] + 1
+    
+     # Classification Report returns a string that contains the chart, but
+     # each element is not in a separate cell. Therefore, classRep splits
+     # the string into an array of each of the elements, with 2 spaces as
+     # the delimiter. 
     classReport = classification_report(allClassifications,allPredictions)
     classRep = classReport.split("  ")
     classRep[3] += ',' #lines up the Precision, Recall, f1, support row with
@@ -168,19 +184,7 @@ def printChart(f, clf, isPlot):
     confMat = np.array2string(confMat, separator=', ')
     f.write(confMat.replace('[', '').replace(']','')) #removes the brackets created when making a numpy array
     f.write("\n\nAccuracy:, " + ("%.6f"%accuracy_score(allClassifications,allPredictions)))
-    f.write('\n')
-        
-################################################################################################################        
-    ## needed only for the rawData128SinglePoint.csv file. This function can be 
-    ## commented out/removed once new data is collected and used with this script
-    ## So when score and test are passed into printRocCurve, they just need the 
-    ## matrix function
-    allPredictions2 = relabel.replace(allPredictions)
-    allClassifications2 = relabel.replace(allClassifications)
-
-    score = matrix(allClassifications2, len(set(allClassifications2)))
-    test = matrix(allPredictions2, len(set(allPredictions2)))
-################################################################################################################
+    f.write('\n')   
     
     printRocCurve(f, score, test, isPlot)
     
