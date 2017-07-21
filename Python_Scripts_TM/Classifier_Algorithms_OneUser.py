@@ -19,7 +19,7 @@ defaultEstimators =
 """
 
 import sys
-
+import csv
 from numpy import genfromtxt
 from sklearn.cross_validation import KFold
 
@@ -33,11 +33,29 @@ from sklearn.linear_model import Perceptron
 import printDataTables_OneUser
 import featureExtraction as featExtr
 
+
 # File IO
-path = 'User0SinglePointData.csv'
-userNumber = int(filter(str.isdigit, path))
+originalFile = 'rawData128SinglePoint.csv'
+#userNumber = int(filter(str.isdigit, path))
+patientID = genfromtxt(originalFile, delimiter=',', skip_header=1,usecols=[384])
+
+# Creates raw data files for each user
+for i in set(patientID):
+    fileName = 'User%s_RawData.csv' % (int(i))
+    userFile = open(fileName, 'wb')
+    
+    f = open(originalFile, 'rU')
+    reader = csv.reader(f)
+    writer = csv.writer(userFile)
+    for row in reader:
+        if int(row[384]) == int(i):
+            writer.writerow(row) 
+    f.close() 
+    userFile.close()
+
+userNumber = 0
+path = 'User%s_RawData.csv' % (str(userNumber))
 data = genfromtxt(path, delimiter=',', skip_header=1,usecols=range(0,384))
-patientID = genfromtxt(path, delimiter=',', skip_header=1,usecols=[384])
 classifications = genfromtxt(path, delimiter=',', skip_header=1,usecols=[385])
 
 # Feature Extraction Script Call

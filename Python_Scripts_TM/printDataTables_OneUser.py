@@ -152,8 +152,7 @@ def printChart(f, clf, isPlot):
 
     ## Combines allPredictions and allClassifications into the confMat at the end
     ## REMEMBER TO REMOVE THE 2 AT THE END OF THE VARIBLES FOR THESE 2 LINES ONLY
-    ## THIS IS ONLY FOR THE RAWDATA
-    ## 128SINGLEPOINT.CSV
+    ## THIS IS ONLY FOR THE RAWDATA128SINGLEPOINT.CSV
     for i in range(len(allClassifications2)):
         confMat[int(allPredictions2[i])][int(allClassifications2[i])] = confMat[int(allPredictions2[i])][int(allClassifications2[i])] + 1
     
