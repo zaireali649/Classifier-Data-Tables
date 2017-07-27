@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Wed Jul 26 12:07:10 2017
+
+@author: morales
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created Jun 6 2017
 
 @author: Thatyana
@@ -18,10 +25,8 @@ defaultEstimators =
 
 """
 
-import sys
 import csv
 from numpy import genfromtxt
-from sklearn.cross_validation import KFold
 
 from sklearn.linear_model import LogisticRegression
 from sklearn import svm
@@ -30,14 +35,21 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.linear_model import Perceptron
 
-import printDataTables_OneUser
-import featureExtraction as featExtr
+import CompiledData_PrintChart 
 
+
+# Default values for Logistic Regression and AdaBoost
+defaultC = 10
+defaultPenalty = 'l1'
+defaultTolerance = .1  
+
+defaultBase = 'dtc'
+defaultEstimators = 700
 
 # File IO
 originalFile = 'rawData128SinglePoint.csv'
-#userNumber = int(filter(str.isdigit, path))
 patientID = genfromtxt(originalFile, delimiter=',', skip_header=1,usecols=[384])
+
 
 # Creates raw data files for each user
 for i in set(patientID):
@@ -52,28 +64,7 @@ for i in set(patientID):
             writer.writerow(row) 
     f.close() 
     userFile.close()
-
-userNumber = 0
-path = 'User%s_RawData.csv' % (str(userNumber))
-data = genfromtxt(path, delimiter=',', skip_header=1,usecols=range(0,384))
-classifications = genfromtxt(path, delimiter=',', skip_header=1,usecols=[385])
-
-# Feature Extraction Script Call
-features = featExtr.main(data,classifications)
-
-# Subsetting
-features = features[:,:]
-
-# Cross- Validation Schemes
-kf = KFold(len(classifications), 10, shuffle=True)
-
-# Default values for Logistic Regression and AdaBoost
-defaultC = 10
-defaultPenalty = 'l1'
-defaultTolerance = .01  
-
-defaultBase = 'dtc'
-defaultEstimators = 50
+    
 
 
 # function uses logistic regression classifier 
@@ -81,9 +72,9 @@ def logRegression(C, penalty, tolerance, isPlot):
     
      ## Creates CSV file with Classifier type, and parameter values 
      ## (C, Penalty, and Tolerance in that order)
-     filetype = 'User_%s_LogisticRegression_%s_%s_%s.csv' % (str(userNumber), str(C), str(penalty), str(tolerance))
+     filetype = 'LogisticRegression_AllUsers_%s_%s_%s.csv' % (str(C), str(penalty), str(tolerance))
      f = open(filetype, "w")
-     filename = 'Logistic Regression\n' + 'User, ' + str(userNumber) + '\nC, ' + str(C) + '\nPenalty, ' + penalty + '\nTolerance, ' + str(tolerance) + '\n\n'
+     filename = 'Logistic Regression' + '\nC, ' + str(C) + '\nPenalty, ' + penalty + '\nTolerance, ' + str(tolerance) + '\n\n'
      f.write(filename)    
     
      ## Initializes classifier type, since all 3 of 
@@ -94,64 +85,67 @@ def logRegression(C, penalty, tolerance, isPlot):
      ## Sets classifier
      clf = LogisticRegression(C=cValue,penalty=penalty, tol=tolValue)
       
-     printDataTables_OneUser.printChart(f, clf, isPlot)     
+     CompiledData_PrintChart.printChart(f, clf, isPlot)     
             
      ## Statement prints when the file is completed, allowing the user to 
      ## know when to open the file to view it        
-     print("\nData is now in \"User_%s_LogisticRegression_%s_%s_%s.csv\"\n" % (str(userNumber), str(C), str(penalty), str(tolerance)))       
+     print("\nData is now in \"LogisticRegression_AllUsers_%s_%s_%s.csv\"\n" % (str(C), str(penalty), str(tolerance)))       
                 
 
 # function uses support vector machine with a linear kernel
 def svMachineLinear(isPlot):
     
     ## Creates CSV file and make title of classifier used
-    filetype = 'User_%s_SVM_Linear.csv' % (str(userNumber))
+    filetype = 'SVMLinear_AllUsers.csv'
     f = open(filetype, "w")
     f.write("Support Vector Machine: Linear Kernel")
-    f.write('\nUser, ' + str(userNumber) + '\n\n')
+    f.write('\n\n')
     
     ## Classifier type for this is SVM, with a linear kernal 
     clf = svm.SVC(kernel='linear')
      
-    printDataTables_OneUser.printChart(f, clf, isPlot)
+    CompiledData_PrintChart.printChart(f, clf, isPlot)
               
-    print("\nData is now in \"User_%s_SVM_Linear.csv\"\n")  
+    print("\nData is now in \"SVMLinear_AllUsers.csv\"\n")  
     
     
 # function uses support vector machine with a gaussian/rbf kernel
 def svMachineRBF(isPlot):
   
     ## Creates CSV file and makes title of classifier used
-    filetype = 'User_%s_SVM_RBF.csv' % (str(userNumber))
+    filetype = 'SVMRBF_AllUsers.csv'
     f = open(filetype, "w")
     f.write("Support Vector Machine: Gaussian/RBF Kernel")
-    f.write('\nUser, ' + str(userNumber) + '\n\n')
+    f.write('\n\n')
     
-    ## Classifier type for this is SVM, with a linear kernal 
-    clf = svm.SVC(kernel='rbf')
+    ## Classifier type for this is SVM, with a gaussian kernal 
+    clf = svm.SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+    decision_function_shape=None, degree=3, gamma='auto', kernel='rbf',
+    max_iter=-1, probability=False, random_state=None, shrinking=True,
+    tol=0.001, verbose=False)
         
-    printDataTables_OneUser.printChart(f, clf, isPlot)        
+    CompiledData_PrintChart.printChart(f, clf, isPlot)        
       
     ## Statement prints when the file is completed, allowing the user to know when to open the file to view it        
-    print("\nData is now in \"User_%s_SVM_RBF.csv\"\n")    
+    print("\nData is now in \"SVMRBF_AllUsers.csv\"\n")    
     
 # function uses Decision Tree classifier
 def decTree(isPlot):
     
     ## Create CSV file and make fancy title
-    filetype = 'User_%s_DecisionTree.csv' % (str(userNumber))
+    filetype = 'DecisionTree_AllUsers.csv'
     f = open(filetype, "w")
     f.write("Decision Tree")
-    f.write('\nUser, ' + str(userNumber) + '\n\n')
+    f.write('\n\n')
     
     ## Classifier type for this is Decision Tree (note, it's considerably faster 
     ## than the other classifiers, in that the results are written sooner)
     clf = tree.DecisionTreeClassifier()
     
-    printDataTables_OneUser.printChart(f, clf, isPlot)
+    CompiledData_PrintChart.printChart(f, clf, isPlot)
     
     ## Statement prints when the file is completed, allowing the user to know when to open the file to view it        
-    print("\nData is now in \"User_%s_DecisionTree.csv\"\n")     
+    print("\nData is now in \"DecisionTree_AllUsers.csv\"\n")     
 
 
 # function uses AdaBoost classifier which takes in a classifier type
@@ -182,85 +176,94 @@ def adaBoost(baseEstimator, nEst, isPlot):
     ## After getting the necessary information, a unique file
     ## is opened, with AdaBoost followed by the type of classifier
     ## and number of estimators in the file name.       
-    filetype = 'User_%s_AdaBoost_%s_%s.csv' % (str(userNumber), baseEst, nEst)
+    filetype = 'AdaBoost_AllUsers_%s_%s.csv' % (baseEst, nEst)
     f = open(filetype, "w")
     filename = ('AdaBoost with %s\nEstimators:, %s' % (baseEst, nEst))
     f.write(filename)
-    f.write('\nUser, ' + str(userNumber) + '\n\n')
+    f.write('\n\n')
     
-    printDataTables_OneUser.printChart(f, clf, isPlot)
+    CompiledData_PrintChart.printChart(f, clf, isPlot)
     
     ## Statement prints when the file is completed, allowing the user to know when to open the file to view it   
-    filer = '\nData is now in User_%s_AdaBoost_%s_%s.csv' % (str(userNumber), baseEst, nEstimators)
+    filer = '\nData is now in \"AdaBoost_AllUsers_%s_%s.csv\"' % (baseEst, nEstimators)
     print(filer)    
+        
 
-
-def main():
-
-    clfSelect = sys.argv[1]  
+def main():    
     
     ## Dictionary to hold classifier function
     classifierDict = {'1':logRegression, '2':svMachineLinear, '3':svMachineRBF, '4':decTree, '5':adaBoost}
-
+    
+    print '--logr (default/C=, Penalty=, Tolerance=)\n--svml\n--svmrbf\n--decTree'
+    print '--ada (default/base=dtc/rfc/perc, estimators=)\n--all'
+    print '\nNote: \'plot\' can be added at the end of any of the classifiers for a pyplot (except all)'
+    print 'Which one would you like?'
+    clfSelect = str(raw_input())
+    choices = clfSelect.split()
+            
     # logistic regression
-    if clfSelect == '--logr':
-        if len(sys.argv) == 2: #default values, no plot
+    if choices[0] == '--logr':
+        if len(choices) == 1: #default values, no plot
             classifierDict['1'](defaultC, defaultPenalty, defaultTolerance, 'false')
-        elif len(sys.argv) == 3:
-            if sys.argv[2] == 'plot': #default values with plot
+        elif len(choices) == 2:
+            if choices[1] == 'plot': #default values with plot
                 classifierDict['1'](defaultC, defaultPenalty, defaultTolerance, 'true')
         else:
-            if len(sys.argv) == 5:
-                classifierDict['1'](sys.argv[2], sys.argv[3], sys.argv[4], 'false') #custom values no plot
+            if len(choices) == 4:
+                classifierDict['1'](choices[1], choices[2], choices[3], 'false') #custom values no plot
             else:
-                classifierDict['1'](sys.argv[2], sys.argv[3], sys.argv[4], 'true') #custom values with plot
+                classifierDict['1'](choices[1], choices[2], choices[3], 'true') #custom values with plot
     
     # SVM linear              
-    elif clfSelect == '--svml':
-        if len(sys.argv) == 2:
+    elif choices[0] == '--svml':
+        if len(choices) == 1:
             classifierDict['2']('false') #svm linear no plot
         else:
-            if sys.argv[2] == 'plot': #svm linear with plot
+            if choices[1] == 'plot': #svm linear with plot
                 classifierDict['2']('true')
        
     # SVM RBF    
-    elif clfSelect == '--svmrbf':
-        if len(sys.argv) == 2:
+    elif choices[0] == '--svmrbf':
+        if len(choices) == 1:
             classifierDict['3']('false') #svm gaussian no plot
         else:
-            if sys.argv[2] == 'plot': #svm gaussian with plot
+            if choices[1] == 'plot': #svm gaussian with plot
                 classifierDict['3']('true')    
     
     # Decision Tree        
-    elif clfSelect == '--dectree':
-        if len(sys.argv) == 2:
+    elif choices[0] == '--decTree':
+        if len(choices) == 1:
             classifierDict['4']('false') #Decision tree no plot
         else:
-            if sys.argv[2] == 'plot': #Decision tree with plot
+            if choices[1] == 'plot': #Decision tree with plot
                 classifierDict['4']('true') 
       
-    # AdaBoost              
-    elif clfSelect == '--ada':
-        if len(sys.argv) == 2:
+    # AdaBoost           
+    
+    elif choices[0] == '--ada':
+        if len(choices) == 1:
             classifierDict['5'](defaultBase, defaultEstimators, 'false') #default values no plot
-        elif len(sys.argv) == 3:
-            if sys.argv[2] == 'plot':
+        elif len(choices) == 2:
+            if choices[1] == 'plot':
                 classifierDict['5'](defaultBase, defaultEstimators, 'true') #default values with plot
-        elif len(sys.argv) == 4:
-            classifierDict['5'](sys.argv[2], sys.argv[3], 'false') #custom values no plot
+        elif len(choices) == 3:
+            classifierDict['5'](choices[1], int(choices[2]), 'false') #custom values no plot
         else:
-            if sys.argv[4] == 'plot':
-                classifierDict['5'](sys.argv[2], sys.argv[3], 'true') #custom values with plot
+            if choices[3] == 'plot':
+                classifierDict['5'](choices[1], int(choices[2]), 'true') #custom values with plot
                         
     elif clfSelect == '--all': #this option will just run every classifier with default values and no plot
-        classifierDict['1'](10, 'l1', .01, 'false')
+        classifierDict['1'](defaultC, defaultPenalty, defaultTolerance, 'false')
         classifierDict['2']('false')
         classifierDict['3']('false')
         classifierDict['4']('false')
-        classifierDict['5']('dtc', 50, 'false')
+        classifierDict['5'](defaultBase, defaultEstimators, 'false')
+        classifierDict['5']('rfc', defaultEstimators, 'false')
+        classifierDict['5']('perc', defaultEstimators, 'false')
                                                       
     else:
         exit(0)  #any key to exit    
 
-if __name__ == '__main__':
-   main()
+if __name__ == "__main__":
+    main()
+   

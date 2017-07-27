@@ -19,7 +19,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 
-from Classifier_Algorithms import classifications, loso, features
+from Classifier_Algorithms_AllUsers_Command import classifications, loso, features
 import relabelGestureSet as relabel
 
 

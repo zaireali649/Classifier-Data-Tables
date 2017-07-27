@@ -32,7 +32,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.linear_model import Perceptron
 
-import printDataTables
+import printDataTables_AllUsers_Command
 import featureExtraction as featExtr
 
 # File IO
@@ -78,7 +78,7 @@ def logRegression(C, penalty, tolerance, isPlot):
      ## Sets classifier
      clf = LogisticRegression(C=cValue,penalty=penalty, tol=tolValue)
       
-     printDataTables.printChart(f, clf, isPlot)     
+     printDataTables_AllUsers_Command.printChart(f, clf, isPlot)     
             
      ## Statement prints when the file is completed, allowing the user to 
      ## know when to open the file to view it        
@@ -95,7 +95,7 @@ def svMachineLinear(isPlot):
     ## Classifier type for this is SVM, with a linear kernal 
     clf = svm.SVC(kernel='linear')
      
-    printDataTables.printChart(f, clf, isPlot)
+    printDataTables_AllUsers_Command.printChart(f, clf, isPlot)
               
     print("\nData is now in \"SVMClassifier_Linear.csv\"\n")  
     
@@ -110,7 +110,7 @@ def svMachineRBF(isPlot):
     ## Classifier type for this is SVM, with a linear kernal 
     clf = svm.SVC(kernel='rbf')
         
-    printDataTables.printChart(f, clf, isPlot)        
+    printDataTables_AllUsers_Command.printChart(f, clf, isPlot)        
       
     ## Statement prints when the file is completed, allowing the user to know when to open the file to view it        
     print("\nData is now in \"SVMClassifier_RBF.csv\"\n")    
@@ -126,7 +126,7 @@ def decTree(isPlot):
     ## than the other classifiers, in that the results are written sooner)
     clf = tree.DecisionTreeClassifier()
     
-    printDataTables.printChart(f, clf, isPlot)
+    printDataTables_AllUsers_Command.printChart(f, clf, isPlot)
     
     ## Statement prints when the file is completed, allowing the user to know when to open the file to view it        
     print("\nData is now in \"DecisionTreeClassifer.csv\"\n")     
@@ -165,7 +165,7 @@ def adaBoost(baseEstimator, nEst, isPlot):
     filename = ('AdaBoost with %s\nEstimators:, %s\n\n' % (baseEst, nEst))
     f.write(filename)
     
-    printDataTables.printChart(f, clf, isPlot)
+    printDataTables_AllUsers_Command.printChart(f, clf, isPlot)
     
     ## Statement prints when the file is completed, allowing the user to know when to open the file to view it   
     filer = '\nData is now in AdaBoostClassifier_%s_%s.csv' % (baseEst, nEstimators)

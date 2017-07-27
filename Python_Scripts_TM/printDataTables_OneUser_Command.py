@@ -18,7 +18,7 @@ import numpy as np
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 
-from Classifier_Algorithms_OneUser import classifications, kf, features
+from Classifier_Algorithms_OneUser_Command import classifications, kf, features
 import relabelGestureSet as relabel
 
 
