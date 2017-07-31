@@ -84,8 +84,8 @@ prepare data for poster boards and research papers than the others.
 
 
 ##############################################################################
-#                                   Examples                                 #
-##############################################################################   
+#                                Examples                                    #
+############################################################################## 
 
 The following are acceptable examples of input for each file. Note: only the 
 scripts that start with "Classifier_Algorithms" or "CompiledData_Classifiers" 
@@ -93,6 +93,7 @@ are to be run The PrintDataTables and PrintChart are accompanying scripts that
 cannot be run independently. 
 
 ***Classifier_Algorithms_AllUsers_Command OR Classifier_Algorithms_OneUser_Command***
+
     C:\Users\[user]\Desktop\[folder]>python Classifier_Algorithms_AllUsers_Command.py --logr
     C:\Users\[user]\Desktop\[folder]>python Classifier_Algorithms_AllUsers_Command.py --ada rfc 500
     C:\Users\[user]\Desktop\[folder]>python Classifier_Algorithms_OneUser_Command.py --svml plot
@@ -101,13 +102,19 @@ cannot be run independently.
 ***Classifier_Algorithms_OneUser_NoCommand OR CompiledData_Classifiers***
 These two must be run from the IDE (not the command line). When it runs, the user 
 is prompted with the following:
+    
     --logr (default/C=, Penalty=, Tolerance=)
-    --svml
-    --svmrbf
-    --decTree
-    --ada (default/base=dtc/rfc/perc, estimators=)
-    --all
 
+    --svml
+
+    --svmrbf
+
+    --decTree
+
+    --ada (default/base=dtc/rfc/perc, estimators=)
+    
+    --all
+    
     Note: 'plot' can be added at the end of any of the classifiers for a pyplot (except all)
     Which one would you like?
 
