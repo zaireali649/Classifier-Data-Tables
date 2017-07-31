@@ -4,9 +4,11 @@ Created Jun 26 2017
 
 @author: Thatyana Morales
 
-Dependant on Classifier_Algorithms, this script handles everything involving
+Dependant on Classifier_Algorithms_AllUsers_Command, this script handles everything involving
 printing the data to the CSV files as well as ROC calculations and ROC curve
 plots. 
+
+Note: Classifier_Algorithms_AllUsers_Command is to be run using the command line 
 
 """
 
@@ -83,7 +85,6 @@ def printRocCurve(f, score, test, isPlot):
            
         
     # Compute macro-average ROC curve and ROC area
-
     # First aggregate all false positive rates
     all_fpr = np.unique(np.concatenate([fpr[i] for i in range(n_classes)]))
     
@@ -139,12 +140,12 @@ def printChart(f, clf, isPlot):
     allClassifications = np.concatenate(allClassifications)
     
 
-#    
-#    # Classification Report returns a string that contains the chart, but
-#    # each element is not in a separate cell. Therefore, classRep splits
+    
+    # Classification Report returns a string that contains the chart, but
+    # each element is not in a separate cell. Therefore, classRep splits
 
-#    # the string into an array of each of the elements, with 2 spaces as
-#    # the delimiter. 
+    # the string into an array of each of the elements, with 2 spaces as
+    # the delimiter. 
     classReport = classification_report(allClassifications,allPredictions)
     classRep = classReport.split("  ")
     classRep[3] += ',' #lines up the Precision, Recall, f1, support row with

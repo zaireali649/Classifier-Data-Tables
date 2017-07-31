@@ -4,9 +4,13 @@ Created Jun 26 2017
 
 @author: Thatyana Morales
 
-Dependant on Classifier_Algorithms, this script handles everything involving
+Dependant on Classifier_Algorithms_OneUser_NoCommand, this script handles everything involving
 printing the data to the CSV files as well as ROC calculations and ROC curve
 plots. 
+
+Note: This file and Classifier_Algorithms_OneUser_NoCommand is not run on the
+command line. The Classifier_Algorithms_OneUser_NoCommand is to be run directly
+from the IDE. 
 
 """
 
@@ -33,8 +37,9 @@ def matrix(y, n):
         m[x][int(y[x])] = 1   
     return (m)
 
+# Plots all ROC curves. This function is optionally called
 def plotRoc(tpr, fpr, roc_auc, n_classes):
-    # Plot all ROC curves
+ 
     plt.figure()
     lw = 2
     plt.plot(fpr["micro"], tpr["micro"],
@@ -65,6 +70,8 @@ def plotRoc(tpr, fpr, roc_auc, n_classes):
     plt.legend(loc="lower right")
     plt.show()
 
+# Prints ROC AUC for each gesture to the csv file. Also calls plotRoc if specified
+# by the user
 def printRocCurve(f, score, test, isPlot):
     
     n_classes = len(set(classifications))
@@ -92,7 +99,7 @@ def printRocCurve(f, score, test, isPlot):
     for i in range(n_classes):
         mean_tpr += interp(all_fpr, fpr[i], tpr[i])
         
-        # Finally average it and compute AUC
+    # Finally average it and compute AUC
     mean_tpr /= n_classes
         
     fpr["macro"] = all_fpr
@@ -125,7 +132,7 @@ def printChart(f, clf, isPlot):
     allPredictions = []
     allClassifications = []
 
-
+    # confusion matrix calculations made
     allPredictions = []
     allClassifications = []
 
@@ -140,17 +147,17 @@ def printChart(f, clf, isPlot):
     allClassifications = np.concatenate(allClassifications)
     
 
-################################################################################################################        
-    ## needed only for the rawData128SinglePoint.csv file. This function can be 
-    ## commented out/removed once new data is collected and used with this script
-    ## So when score and test are passed into printRocCurve, they just need the 
-    ## matrix function
+#==============================================================================       
+#     ## needed only for the rawData128SinglePoint.csv file. This function can be 
+#     ## commented out/removed once new data is collected and used with this script
+#     ## So when score and test are passed into printRocCurve, they just need the 
+#     ## matrix function
     allPredictions2 = relabel.replace(allPredictions)
     allClassifications2 = relabel.replace(allClassifications)
-
+# 
     score = matrix(allClassifications2, len(set(allClassifications2)))
     test = matrix(allPredictions2, len(set(allPredictions2)))
-################################################################################################################ 
+#==============================================================================
 
     ## Combines allPredictions and allClassifications into the confMat at the end
     ## REMEMBER TO REMOVE THE 2 AT THE END OF THE VARIBLES FOR THESE 2 LINES ONLY
@@ -158,10 +165,10 @@ def printChart(f, clf, isPlot):
     for i in range(len(allClassifications2)):
         confMat[int(allPredictions2[i])][int(allClassifications2[i])] = confMat[int(allPredictions2[i])][int(allClassifications2[i])] + 1
     
-     # Classification Report returns a string that contains the chart, but
-     # each element is not in a separate cell. Therefore, classRep splits
-     # the string into an array of each of the elements, with 2 spaces as
-     # the delimiter. 
+    # Classification Report returns a string that contains the chart, but
+    # each element is not in a separate cell. Therefore, classRep splits
+    # the string into an array of each of the elements, with 2 spaces as
+    # the delimiter. 
     classReport = classification_report(allClassifications,allPredictions)
     classRep = classReport.split("  ")
     classRep[3] += ',' #lines up the Precision, Recall, f1, support row with
@@ -187,5 +194,6 @@ def printChart(f, clf, isPlot):
     f.write("\n\nAccuracy:, " + ("%.6f"%accuracy_score(allClassifications,allPredictions)))
     f.write('\n')   
     
+    # called to print ROC AUC to the csv file.
     #printRocCurve(f, score, test, isPlot)
     

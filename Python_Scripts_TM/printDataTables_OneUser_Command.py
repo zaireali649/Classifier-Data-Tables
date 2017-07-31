@@ -4,9 +4,12 @@ Created Jun 26 2017
 
 @author: Thatyana Morales
 
-Dependant on Classifier_Algorithms, this script handles everything involving
+Dependant on Classifier_Algorithms_OneUser_Command, this script handles everything involving
 printing the data to the CSV files as well as ROC calculations and ROC curve
 plots. 
+
+Note: Classifier_Algorithms_OneUser_Command IS supposed to be run from the 
+command line
 
 """
 
@@ -31,8 +34,8 @@ def matrix(y, n):
         m[x][int(y[x])] = 1   
     return (m)
 
+# Plot all ROC curves
 def plotRoc(tpr, fpr, roc_auc, n_classes):
-    # Plot all ROC curves
     plt.figure()
     lw = 2
     plt.plot(fpr["micro"], tpr["micro"],
@@ -138,17 +141,17 @@ def printChart(f, clf, isPlot):
     allClassifications = np.concatenate(allClassifications)
     
 
-################################################################################################################        
-    ## needed only for the rawData128SinglePoint.csv file. This function can be 
-    ## commented out/removed once new data is collected and used with this script
-    ## So when score and test are passed into printRocCurve, they just need the 
-    ## matrix function
+#==============================================================================       
+#     ## needed only for the rawData128SinglePoint.csv file. This function can be 
+#     ## commented out/removed once new data is collected and used with this script
+#     ## So when score and test are passed into printRocCurve, they just need the 
+#     ## matrix function
     allPredictions2 = relabel.replace(allPredictions)
     allClassifications2 = relabel.replace(allClassifications)
-
+ 
     score = matrix(allClassifications2, len(set(allClassifications2)))
     test = matrix(allPredictions2, len(set(allPredictions2)))
-################################################################################################################ 
+#==============================================================================
 
     ## Combines allPredictions and allClassifications into the confMat at the end
     ## REMEMBER TO REMOVE THE 2 AT THE END OF THE VARIBLES FOR THESE 2 LINES ONLY

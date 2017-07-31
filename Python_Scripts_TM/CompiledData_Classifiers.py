@@ -11,7 +11,9 @@ Created Jun 6 2017
 
 @author: Thatyana
 
-Specific instructions on how to use this script are in the README     
+Specific instructions on how to use this script are in the README
+
+Note: This script is run from the IDE itself, not from the command line     
 
 **********To change default values for Log Reg and AdaBoost*******************
 The default values are listed right before the LogRegression function down
@@ -238,8 +240,7 @@ def main():
             if choices[1] == 'plot': #Decision tree with plot
                 classifierDict['4']('true') 
       
-    # AdaBoost           
-    
+    # AdaBoost              
     elif choices[0] == '--ada':
         if len(choices) == 1:
             classifierDict['5'](defaultBase, defaultEstimators, 'false') #default values no plot

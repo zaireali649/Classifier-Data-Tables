@@ -6,6 +6,9 @@ Created Jun 6 2017
 
 Specific instructions on how to use this script are in the README     
 
+Note: This script is for one user (user # can be changed using userNumber)
+This is run from the IDE, not the command line. 
+
 **********To change default values for Log Reg and AdaBoost*******************
 The default values are listed right before the LogRegression function down
 below. It should look like this:

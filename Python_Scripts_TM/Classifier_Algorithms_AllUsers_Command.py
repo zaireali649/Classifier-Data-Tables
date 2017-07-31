@@ -4,7 +4,9 @@ Created Jun 6 2017
 
 @author: Thatyana
 
-Specific instructions on how to use this script are in the README     
+Specific instructions on how to use this script are in the README 
+
+Note: This script uses all users together, and is to be run from the command line    
 
 **********To change default values for Log Reg and AdaBoost*******************
 The default values are listed right before the LogRegression function down
@@ -57,7 +59,7 @@ defaultPenalty = 'l1'
 defaultTolerance = .01  
 
 defaultBase = 'dtc'
-defaultEstimators = 50
+defaultEstimators = 700
 
 
 # function uses logistic regression classifier 

@@ -11,7 +11,7 @@ Created Jun 26 2017
 
 @author: Thatyana Morales
 
-Dependant on Classifier_Algorithms, this script handles everything involving
+Dependant on CompiledData_Classifiers.py, this script handles everything involving
 printing the data to the CSV files as well as ROC calculations and ROC curve
 plots. 
 
