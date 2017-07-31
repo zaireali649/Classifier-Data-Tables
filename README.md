@@ -85,7 +85,7 @@ prepare data for poster boards and research papers than the others.
 
 ##############################################################################
 #                                Examples                                    #
-############################################################################## 
+
 
 The following are acceptable examples of input for each file. Note: only the 
 scripts that start with "Classifier_Algorithms" or "CompiledData_Classifiers" 
