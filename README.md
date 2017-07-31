@@ -85,16 +85,17 @@ prepare data for poster boards and research papers than the others.
 
 ##############################################################################
 #                                   Examples                                 #
-##############################################################################    
+##############################################################################   
+
 The following are acceptable examples of input for each file. Note: only the 
 scripts that start with "Classifier_Algorithms" or "CompiledData_Classifiers" 
 are to be run The PrintDataTables and PrintChart are accompanying scripts that 
 cannot be run independently. 
 
 ***Classifier_Algorithms_AllUsers_Command OR Classifier_Algorithms_OneUser_Command***
-    1) C:\Users\[user]\Desktop\[folder]>python Classifier_Algorithms_AllUsers_Command.py --logr
-    2) C:\Users\[user]\Desktop\[folder]>python Classifier_Algorithms_AllUsers_Command.py --ada rfc 500
-    3) C:\Users\[user]\Desktop\[folder]>python Classifier_Algorithms_OneUser_Command.py --svml plot
+    C:\Users\[user]\Desktop\[folder]>python Classifier_Algorithms_AllUsers_Command.py --logr
+    C:\Users\[user]\Desktop\[folder]>python Classifier_Algorithms_AllUsers_Command.py --ada rfc 500
+    C:\Users\[user]\Desktop\[folder]>python Classifier_Algorithms_OneUser_Command.py --svml plot
 
 
 ***Classifier_Algorithms_OneUser_NoCommand OR CompiledData_Classifiers***
