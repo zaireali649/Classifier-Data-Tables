@@ -37,7 +37,7 @@ from sklearn.linear_model import Perceptron
 import printDataTables_OneUser_NoCommand
 
 #Current user
-userNumber = 4
+userNumber = 17
 path = 'User%s_RawData.csv' % (str(userNumber))
 
 # Default values for Logistic Regression and AdaBoost

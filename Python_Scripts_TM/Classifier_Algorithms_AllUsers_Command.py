@@ -33,6 +33,7 @@ from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.linear_model import Perceptron
+from sklearn import preprocessing
 
 import printDataTables_AllUsers_Command
 import featureExtraction as featExtr
@@ -48,6 +49,7 @@ features = featExtr.main(data,classifications)
 
 # Subsetting
 features = features[:,:]
+features = preprocessing.scale(features)
 
 # Cross- Validation Schemes
 kf = KFold(len(classifications), 10)
